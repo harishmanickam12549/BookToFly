@@ -1,6 +1,7 @@
 using FlightDetailApi.Configurations;
 using FlightDetailApi.Data;
 using FlightDetailApi.MappingDTO;
+using FlightDetailApi.Models;
 using FlightDetailApi.Repositories;
 using FlightDetailApi.Repositories.IRepository;
 using FlightDetailApi.Services;
@@ -16,14 +17,13 @@ builder.Services.AddSwaggerConfiguration();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(FlightMapper)); // AutoMapper profile registration
 builder.Services.AddDatabaseContexts(builder.Configuration); // Ensure this method correctly configures your DbContext
-builder.Services.AddScoped<JWTTokenService>();
 builder.Services.AddCorsPolicy();
 builder.Host.ConfigureLogging();
 
 // Registering repositories and services
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<AdminService>();
+builder.Services.AddTransient<AdminService>();
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddSingleton<JWTTokenService>();
 
 var app = builder.Build();
 
@@ -41,6 +41,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.Run();

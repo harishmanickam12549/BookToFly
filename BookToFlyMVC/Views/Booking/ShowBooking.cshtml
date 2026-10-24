@@ -3,6 +3,7 @@
     ViewData["Title"] = "All Tickets";
 }
 
+@await Html.PartialAsync("~/Views/Admin/Header.cshtml")
 @if (Model != null && Model.Any())
 {
     <div class="container mt-5">
@@ -117,7 +118,6 @@ else
                 <p><strong>Departure:</strong> ${flight.departureTime}</p>
                 <p><strong>Arrival:</strong> ${flight.arrivalTime}</p>
                 <p><strong>Duration:</strong> ${flight.duration} hours</p>
-                <p><strong>Available Seats:</strong> ${flight.availableSeats}</p>
                 <p><strong>Ticket Price:</strong> ₹${flight.ticketPrice}</p>
             `;
                 document.getElementById('bookingDetails').innerHTML = content;
@@ -128,3 +128,7 @@ else
             });
     }
 </script>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}

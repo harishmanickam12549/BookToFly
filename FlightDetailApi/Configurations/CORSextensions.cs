@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 namespace FlightDetailApi.Configurations
 {
     public static class CROSextensions
-{
-    public static void AddCorsPolicy(this IServiceCollection services)
     {
-        services.AddCors(options =>
+        /// <summary>
+        /// Adds a default CORS policy to allow any origin, method, and header.
+        /// </summary>
+        /// <param name="services">The service collection to configure CORS for.</param>
+        public static void AddCorsPolicy(this IServiceCollection services)
         {
-            options.AddDefaultPolicy(builder =>
-                builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-        });
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                    builder.AllowAnyOrigin()  
+                        .AllowAnyMethod()  
+                        .AllowAnyHeader()); 
+            });
+        }
     }
-}
-
 }

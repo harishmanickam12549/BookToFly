@@ -49,22 +49,6 @@ namespace BookToFlyMVC.Controllers
                 throw new ProfileLoadException("An error occurred while loading the profile page.\n" + exception.Message);
             }
         }
-
-        // Logout action - redirects to the login page
-        public IActionResult Logout()
-        {
-            try
-            {
-                return RedirectToAction("Login", "User");
-            }
-            catch (Exception exception)
-            {
-                // Log error and throw a custom exception
-                _logger.LogError(exception.Message, "Error during logout.");
-                throw new LogoutException("An error occurred during logout.\n" + exception.Message);
-            }
-        }
-
         // Action for pages that are yet to be developed
         public IActionResult YetToDevelop()
         {

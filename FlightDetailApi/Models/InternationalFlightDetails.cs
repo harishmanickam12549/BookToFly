@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel.DataAnnotations;
+using FlightDetailApi.Constants;
 
 namespace FlightDetailApi.Models
 {
@@ -6,19 +8,19 @@ namespace FlightDetailApi.Models
     {
         [Key]
         [Required]
-        [RegularExpression(@"^(IF)[0-9]{1,4}$", ErrorMessage = "Flight number must start with 'IF' (International Flight) followed by 1 to 4 digits.")]
+        [RegularExpression(RegexPatterns.FlightIdPatternIF, ErrorMessage = ModelConstants.FlightIdFormat)]
         public string FlightId { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Flight name cannot exceed 100 characters.")]
+        [StringLength(100, ErrorMessage = ModelConstants.FlightNameLength)]
         public string AirlineName { get; set; }
 
         [Required]
-        [StringLength(50, ErrorMessage = "Source location cannot exceed 50 characters.")]
+        [StringLength(50, ErrorMessage = ModelConstants.SourceLength)]
         public string Source { get; set; }
 
         [Required]
-        [StringLength(50, ErrorMessage = "Destination location cannot exceed 50 characters.")]
+        [StringLength(50, ErrorMessage = ModelConstants.DestinationLength)]
         public string Destination { get; set; }
 
         [Required]
@@ -30,21 +32,19 @@ namespace FlightDetailApi.Models
         public TimeSpan DepartureTime { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue, ErrorMessage = "Duration must be a positive number.")]
+        [Range(0, double.MaxValue, ErrorMessage = ModelConstants.DurationPositive)]
         public double Duration { get; set; }
 
         [Required]
-        [Range(1, 500, ErrorMessage = "Available seats should be between 1 and 500.")]
+        [Range(1, 500, ErrorMessage = ModelConstants.AvailableSeatsRange)]
         public int AvailableSeats { get; set; }
 
         [Required]
-        [Range(1000, 50000, ErrorMessage = "Ticket price should be between 1000 and 50000.")]
+        [Range(1000, 50000, ErrorMessage = ModelConstants.TicketPriceRange)]
         public decimal TicketPrice { get; set; }
 
-        // List of days the flight is available
-        [Required(ErrorMessage = "Available days are required.")]
-        [MinLength(1, ErrorMessage = "There must be at least one available day.")]
+        [Required(ErrorMessage = ModelConstants.AvailableDaysRequired)]
+        [MinLength(1, ErrorMessage = ModelConstants.AtLeastOneAvailableDay)]
         public List<string> AvailableDays { get; set; }
-
     }
 }

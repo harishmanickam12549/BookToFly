@@ -33,17 +33,17 @@ else
 {
     app.UseDeveloperExceptionPage();
 }
-
+// Handle status codes by redirecting to the error page with the status code
 app.UseStatusCodePagesWithReExecute("/Home/Error", "?code={0}");
 app.UseHttpsRedirection();
+// Serve static files like CSS, JS, and images
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowAll");
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Login}");
 
 app.Run();

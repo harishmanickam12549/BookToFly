@@ -39,20 +39,21 @@
                 </div>
             }
 
-            <form method="post" asp-controller="Home" asp-action="Login">
+            <form method="post" asp-controller="Home" asp-action="Login" onsubmit="return validateForm()">
                 <div class="mb-4 position-relative">
                     <i class="bi bi-person-fill input-icon"></i>
                     <input type="text" id="username" name="Username" class="form-control ps-5"
-                        placeholder="Enter username" required>
+                        placeholder="Enter username">
+                    <span id="usernameError" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-4 position-relative">
-                    <i class="bi bi-lock-fill input-icon "></i>
+                    <i class="bi bi-lock-fill input-icon"></i>
                     <input type="password" id="Password" name="Password" class="form-control ps-5"
-                        placeholder="Enter your password" required>
+                        placeholder="Enter your password">
                     <i class="bi bi-eye-slash password-toggle" onclick="togglePasswordVisibility()"></i>
+                    <span id="passwordError" class="text-danger small"></span>
                 </div>
-
 
                 <div class="mb-4">
                     <select id="role" name="Role" class="form-select ps-4" required>
@@ -62,11 +63,35 @@
 
                 <button type="submit" class="btn btn-primary w-100 mb-4">Sign In →</button>
             </form>
+
         </div>
     </div>
 </div>
 
 <script>
+    function validateForm() {
+        let isValid = true;
+        let username = document.getElementById("username").value.trim();
+        let password = document.getElementById("Password").value.trim();
+        let usernameError = document.getElementById("usernameError");
+        let passwordError = document.getElementById("passwordError");
+
+        usernameError.innerText = "";
+        passwordError.innerText = "";
+
+        if (username === "") {
+            usernameError.innerText = "Username is required.";
+            isValid = false;
+        }
+
+        if (password === "") {
+            passwordError.innerText = "Password is required.";
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
     function togglePasswordVisibility() {
         const passwordField = document.getElementById('Password');
         const toggleIcon = document.querySelector('.password-toggle');
@@ -79,14 +104,21 @@
             toggleIcon.classList.replace('bi-eye', 'bi-eye-slash');
         }
     }
-    $(document).ready(function () {
-    setTimeout(() => {
-        $('.animated-alert').fadeOut(); 
-    }, 2000);
-});
 
+    document.getElementById("username").addEventListener("input", function () {
+        document.getElementById("usernameError").innerText = "";
+    });
+
+    document.getElementById("Password").addEventListener("input", function () {
+        document.getElementById("passwordError").innerText = "";
+    });
 </script>
 
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}
 <style>
     body {
         background: linear-gradient(140deg, #5bd76c 0%, #dfff2a 80%);
@@ -136,13 +168,15 @@
     }
 
     .input-icon {
-    position: absolute;
-    left: 12px;  /* Adjust if needed */
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem; /* Ensure it is visible */
-    color: #6c757d;
-    z-index: 10; /* Ensure it appears above the input */
-}
-
+        position: absolute;
+        left: 12px;
+        /* Adjust if needed */
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        /* Ensure it is visible */
+        color: #6c757d;
+        z-index: 10;
+        /* Ensure it appears above the input */
+    }
 </style>

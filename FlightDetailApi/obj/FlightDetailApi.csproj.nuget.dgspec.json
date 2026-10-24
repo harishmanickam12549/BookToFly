@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\harish.muthu\\Desktop\\Dotnet Traning\\BookToFlyMVCwithAPI\\FlightDetailApi\\FlightDetailApi.csproj": {}
+    "D:\\Dotnet Traning\\Application(API,MVC,React)Dev\\FlightDetailApi\\FlightDetailApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\harish.muthu\\Desktop\\Dotnet Traning\\BookToFlyMVCwithAPI\\FlightDetailApi\\FlightDetailApi.csproj": {
+    "D:\\Dotnet Traning\\Application(API,MVC,React)Dev\\FlightDetailApi\\FlightDetailApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\harish.muthu\\Desktop\\Dotnet Traning\\BookToFlyMVCwithAPI\\FlightDetailApi\\FlightDetailApi.csproj",
+        "projectUniqueName": "D:\\Dotnet Traning\\Application(API,MVC,React)Dev\\FlightDetailApi\\FlightDetailApi.csproj",
         "projectName": "FlightDetailApi",
-        "projectPath": "C:\\Users\\harish.muthu\\Desktop\\Dotnet Traning\\BookToFlyMVCwithAPI\\FlightDetailApi\\FlightDetailApi.csproj",
+        "projectPath": "D:\\Dotnet Traning\\Application(API,MVC,React)Dev\\FlightDetailApi\\FlightDetailApi.csproj",
         "packagesPath": "C:\\Users\\harish.muthu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\harish.muthu\\Desktop\\Dotnet Traning\\BookToFlyMVCwithAPI\\FlightDetailApi\\obj\\",
+        "outputPath": "D:\\Dotnet Traning\\Application(API,MVC,React)Dev\\FlightDetailApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\harish.muthu\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -115,7 +115,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.408/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

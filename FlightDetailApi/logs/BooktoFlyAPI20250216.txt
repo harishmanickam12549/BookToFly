@@ -4,3 +4,28 @@
 2025-02-16 02:14:34.818 +05:30 [INF] User Test2 registered successfully.
 2025-02-16 03:01:00.464 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: International, FlightNumber: IF901
 2025-02-16 03:01:08.735 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: International, FlightNumber: IF910
+2025-02-16 10:44:53.389 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-02-16 18:12:12.530 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-02-16 18:20:09.764 +05:30 [INF] Login attempt for user: Admin
+2025-02-16 18:20:10.542 +05:30 [INF] Login successful for user: Admin. JWT token generated.
+2025-02-16 18:20:19.015 +05:30 [INF] DisplayAllFlightNumbersByType request received for FlightType: Domestic
+2025-02-16 18:20:22.781 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:20:22.781 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:21:48.545 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:22:03.253 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:22:09.311 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:22:10.964 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:22:11.022 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:22:13.721 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:22:29.954 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:22:41.490 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:23:50.160 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:23:58.042 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:24:26.337 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:25:14.107 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:26:23.257 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:26:40.111 +05:30 [INF] UpdateFlight request received for FlightId: DF234
+2025-02-16 18:26:40.295 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:27:19.878 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234
+2025-02-16 18:27:26.094 +05:30 [INF] UpdateFlight request received for FlightId: DF234
+2025-02-16 18:27:26.124 +05:30 [INF] MatchFlightByNumberAndType invoked with FlightType: Domestic, FlightNumber: DF234

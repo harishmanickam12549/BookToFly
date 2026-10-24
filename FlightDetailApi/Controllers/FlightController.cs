@@ -1,4 +1,5 @@
 using BookToFlyMVC.Validations;
+using FlightDetailApi.Constants;
 using FlightDetailApi.DTO;
 using FlightDetailApi.Models;
 using FlightDetailApi.Repositories;
@@ -20,63 +21,6 @@ namespace FlightDetailApi.Controllers
             _flightRepository = flightRepository;
             _logger = logger;
         }
-
-        // POST: api/Flight/AddFlights
-        // Adds multiple flights at once.
-        [HttpPost("AddFlights")]
-        public async Task<IActionResult> AddFlights([FromBody] List<FlightInputDTO> flightInputs)
-        {
-            if (flightInputs == null || !ModelState.IsValid)
-            {
-                return BadRequest(new { Error = "Invalid input" });
-            }
-
-            var invalidFlights = new List<string>();
-
-            foreach (var flightInput in flightInputs)
-            {
-                if (flightInput.FlightId == null)
-                {
-                    invalidFlights.Add("Unknown FlightId");
-                    continue;
-                }
-
-                // Check if the flight already exists
-                if (await _flightRepository.FlightExists(flightInput.FlightId))
-                {
-                    invalidFlights.Add(flightInput.FlightId);
-                    continue;
-                }
-
-                try
-                {
-                    await _flightRepository.AddFlightAsync(flightInput);
-                }
-                catch (FlightApiException flightApiException) // Custom exception handling
-                {
-                    _logger.LogError($"Error adding flight {flightInput.FlightId} {flightApiException.Message}");
-                    invalidFlights.Add(flightInput.FlightId);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error adding flight {FlightId}", flightInput.FlightId);
-                    invalidFlights.Add(flightInput.FlightId);
-                }
-            }
-
-            if (invalidFlights.Any())
-            {
-                return Ok(new
-                {
-                    success = true,
-                    message = "Some flights could not be added.",
-                    invalidFlights
-                });
-            }
-
-            return Ok("All flights added successfully.");
-        }
-
         // POST: api/Flight/AddFlight
         // Adds a single flight (Admin-only access)
         [HttpPost("AddFlight")]
@@ -101,13 +45,13 @@ namespace FlightDetailApi.Controllers
             if (await _flightRepository.FlightExists(flightInput.FlightId))
             {
                 _logger.LogWarning("Duplicate FlightId detected: {FlightId}", flightInput.FlightId);
-                return BadRequest($"Flight with FlightId {flightInput.FlightId} already exists.");
+                return BadRequest(ResponseMessages.FlightAlreadyExists+flightInput.FlightId);
             }
 
             try
             {
                 await _flightRepository.AddFlightAsync(flightInput);
-                return Ok("Flight added successfully.");
+                return Ok(ResponseMessages.FlightAdded);
             }
             catch (FlightApiException flightApiException)
             {
@@ -124,20 +68,20 @@ namespace FlightDetailApi.Controllers
         // GET: api/Flight/DisplayAllFlightNumbersByType?FlightType=Domestic
         // Retrieves flight numbers based on flight type.
         [HttpGet("DisplayAllFlightNumbersByType")]
-        public async Task<IActionResult> DisplayAllFlightNumbersByType([FromQuery] string FlightType)
+        public async Task<IActionResult> DisplayAllFlightNumbersByType([FromQuery] string flightType)
         {
-            _logger.LogInformation("DisplayAllFlightNumbersByType request received for FlightType: {FlightType}", FlightType);
+            _logger.LogInformation("DisplayAllFlightNumbersByType request received for FlightType: {FlightType}", flightType);
 
-            if (string.IsNullOrEmpty(FlightType))
+            if (string.IsNullOrEmpty(flightType))
             {
                 return BadRequest("FlightType is required.");
             }
 
-            var flightNumbers = await _flightRepository.GetFlightNumbersByType(FlightType);
+            var flightNumbers = await _flightRepository.GetFlightNumbersByType(flightType);
 
             if (!flightNumbers.Any())
             {
-                return Ok(new { message = "No flights found for the specified Flight Type." });
+                return Ok(new { message = ResponseMessages.FlightNotFoundOnFlightType });
             }
 
             return Ok(flightNumbers);
@@ -148,18 +92,18 @@ namespace FlightDetailApi.Controllers
         [HttpPost("DisplayFlightBySourceAndDestination")]
         public async Task<IActionResult> GetFlightsBySourceAndDestination(FlightSearchInput searchInput)
         {
-            _logger.LogInformation("GetFlightsBySourceAndDestination request received.");
+            _logger.LogInformation(ResponseMessages.SearchFlight);
 
             if (string.IsNullOrWhiteSpace(searchInput.Source) || string.IsNullOrWhiteSpace(searchInput.Destination) || string.IsNullOrWhiteSpace(searchInput.FlightType))
             {
-                return BadRequest("FlightType, Source, and Destination must be provided.");
+                return BadRequest(ErrorMessages.AllParametersRequired);
             }
 
             var flights = await _flightRepository.GetFlightsBySourceAndDestination(searchInput);
 
             if (!flights.Any())
             {
-                return NotFound("No flights found for the specified source, destination, and flight type.");
+                return NotFound(ErrorMessages.FlightNotFoundOnSearch);
             }
 
             return Ok(flights);
@@ -176,23 +120,23 @@ namespace FlightDetailApi.Controllers
         // GET: api/Flight/MatchFlightByNumberAndType
         // Matches a flight based on its type and number.
         [HttpGet("MatchFlightByNumberAndType")]
-        public async Task<IActionResult> MatchFlightByNumberAndType([FromQuery] string FlightType, [FromQuery] string flightNumber)
+        public async Task<IActionResult> MatchFlightByNumberAndType([FromQuery] string flightType, [FromQuery] string flightNumber)
         {
-            _logger.LogInformation("MatchFlightByNumberAndType invoked with FlightType: {FlightType}, FlightNumber: {FlightNumber}", FlightType, flightNumber);
+            _logger.LogInformation("MatchFlightByNumberAndType invoked with FlightType: {FlightType}, FlightNumber: {FlightNumber}", flightType, flightNumber);
 
-            if (string.IsNullOrEmpty(FlightType) || string.IsNullOrEmpty(flightNumber))
+            if (string.IsNullOrEmpty(flightType) || string.IsNullOrEmpty(flightNumber))
             {
-                return BadRequest("FlightType and FlightNumber both are required.");
+                return BadRequest(ErrorMessages.AllParametersRequired);
             }
 
             try
             {
-                var flightLists = await _flightRepository.GetFlightsByTypeAsync(FlightType);
+                var flightLists = await _flightRepository.GetFlightsByTypeAsync(flightType);
                 var flight = flightLists.FirstOrDefault(f => f.FlightId.Equals(flightNumber, StringComparison.OrdinalIgnoreCase));
 
                 if (flight == null)
                 {
-                    return NotFound("Flight not found with the provided Flight Number.");
+                    return NotFound(ErrorMessages.InvalidFlightNumber);
                 }
 
                 return Ok(flight);
@@ -229,13 +173,13 @@ namespace FlightDetailApi.Controllers
 
             if (flightId != flightInput.FlightId)
             {
-                return BadRequest("Flight ID in route does not match Flight ID in body.");
+                return BadRequest(ErrorMessages.InvalidFlightIdMissMatch);
             }
 
             try
             {
                 await _flightRepository.UpdateFlightAsync(flightInput);
-                return Ok("Flight updated successfully.");
+                return Ok(ResponseMessages.FlightUpdated);
             }
             catch (FlightNotFoundException ex)
             {
@@ -245,7 +189,7 @@ namespace FlightDetailApi.Controllers
             catch (UnauthorizedFlightAccessException ex)
             {
                 _logger.LogWarning(ex.Message);
-                return Forbid();
+                return Forbid(ResponseMessages.UnauthorizedAccess);
             }
             catch (FlightApiException ex)
             {
@@ -262,7 +206,7 @@ namespace FlightDetailApi.Controllers
             try
             {
                 await _flightRepository.DeleteFlightAsync(flightId);
-                return Ok(new { success = true, message = "Flight Deleted Successfully" });
+                return Ok(new { success = true, message = ResponseMessages.FlightDeleted });
             }
             catch (FlightNotFoundException ex)
             {

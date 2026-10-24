@@ -97,11 +97,11 @@ else { <div class="alert alert-warning">No flight details available.</div> }
         var messageClass = '';
 
         if ('@TempData["UpdateErrorMessage"]' ||'@TempData["CreateFailedMessage"]') {
-            messageClass = 'text-bg-danger';  // Error message class
+            messageClass = 'text-danger';  // Error message class
         } else if ('@TempData["UpdateSuccessMessage"]'||'@TempData["CreateSuccessMessage"]') {
             messageClass = 'text-success';  // Success message class
         } else {
-            messageClass = 'text-secondary'; // Default message class
+            messageClass = 'text-danger'; // Default message class
         }
 
         if (message) {
@@ -119,3 +119,7 @@ else { <div class="alert alert-warning">No flight details available.</div> }
         }
     });
 </script>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}

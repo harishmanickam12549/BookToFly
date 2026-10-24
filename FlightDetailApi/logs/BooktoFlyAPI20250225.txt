@@ -1,0 +1,47 @@
+2025-02-25 09:30:22.239 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-02-25 09:30:22.468 +05:30 [INF] Login attempt for user: string
+2025-02-25 09:30:24.250 +05:30 [WRN] Login failed: Invalid username or password.
+2025-02-25 09:34:13.336 +05:30 [INF] User Anand123 registered successfully.
+2025-02-25 09:34:32.686 +05:30 [INF] User Anand123 logged in successfully.
+2025-02-25 09:34:33.948 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:34:34.036 +05:30 [WRN] No tickets found for user: Anand123
+2025-02-25 09:34:34.043 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:34:34.054 +05:30 [WRN] No tickets found for user: Anand123
+2025-02-25 09:34:39.315 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:34:39.323 +05:30 [WRN] No tickets found for user: Anand123
+2025-02-25 09:34:39.339 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:34:39.346 +05:30 [WRN] No tickets found for user: Anand123
+2025-02-25 09:35:44.272 +05:30 [INF] Received request to add a ticket for username: Anand123, BookingId: 34924
+2025-02-25 09:36:02.295 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:36:02.316 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:36:11.947 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:36:11.960 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:36:13.595 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:36:13.611 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:36:16.558 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:36:16.573 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:38:24.546 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:38:24.613 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:38:38.446 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:38:38.479 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:38:53.413 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:38:53.439 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:39:29.731 +05:30 [INF] User Anand123 logged in successfully.
+2025-02-25 09:39:31.200 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:39:31.227 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:42:49.645 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-02-25 09:42:49.772 +05:30 [INF] Fetching tickets for username: Harish
+2025-02-25 09:42:50.640 +05:30 [WRN] No tickets found for user: Harish
+2025-02-25 09:43:04.065 +05:30 [INF] Fetching tickets for username: Prakash
+2025-02-25 09:43:28.499 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:43:28.586 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:43:38.756 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:43:38.766 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:44:10.328 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 09:44:10.341 +05:30 [INF] Fetching tickets for username: Anand123
+2025-02-25 10:24:17.671 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-02-25 10:24:17.917 +05:30 [INF] Login attempt for user: Admin
+2025-02-25 10:24:19.784 +05:30 [INF] Login successful for user: Admin. JWT token generated.
+2025-02-25 10:25:08.342 +05:30 [INF] Fetching all ticket details.
+2025-02-25 12:01:00.587 +05:30 [INF] Login attempt for user: Admin
+2025-02-25 12:01:00.678 +05:30 [INF] Login successful for user: Admin. JWT token generated.

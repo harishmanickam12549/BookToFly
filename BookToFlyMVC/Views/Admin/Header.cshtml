@@ -19,7 +19,7 @@
             <ul class="navbar-nav ms-auto">
                 <!-- Logout Button and Icon -->
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="/Home/Login">
+                    <a class="nav-link text-danger" asp-controller="Home" asp-action="Logout">
                         <i class="bi bi-box-arrow-right me-2"></i>Logout
                     </a>
                 </li>
@@ -63,3 +63,7 @@
         sideNav.classList.remove('show');
     });
 </script>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}

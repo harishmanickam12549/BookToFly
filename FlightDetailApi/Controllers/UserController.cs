@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FlightDetailApi.Constants;
 using FlightDetailApi.Data;
 using FlightDetailApi.Models;
 using FlightDetailApi.DTO;
-using BCrypt.Net;
 
 namespace FlightDetailApi.Controllers
 {
@@ -26,12 +26,13 @@ namespace FlightDetailApi.Controllers
         {
             if (userDetail == null || string.IsNullOrWhiteSpace(userDetail.Username))
             {
-                return BadRequest(new { message = "Username is required." });
+                _logger.LogWarning("Invalid registration attempt: Username missing.");
+                return BadRequest(new { success = false, message = ResponseMessages.UsernameRequired });
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // Return validation errors
+                return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
             }
 
             try
@@ -39,15 +40,15 @@ namespace FlightDetailApi.Controllers
                 // Check if Email already exists
                 if (await _dbContext.Users.AnyAsync(u => u.Email == userDetail.Email))
                 {
-                    _logger.LogWarning($"Email {userDetail.Email} is already registered.");
-                    return Conflict(new { message = "Email is already registered." });
+                    _logger.LogWarning("Registration attempt failed: Email {Email} already exists.", userDetail.Email);
+                    return Conflict(new { success = false, message = ResponseMessages.EmailExists });
                 }
 
                 // Check if Username already exists
                 if (await _dbContext.Users.AnyAsync(u => u.Username == userDetail.Username))
                 {
-                    _logger.LogWarning($"Username {userDetail.Username} is already taken.");
-                    return Conflict(new { message = "Username is already taken." });
+                    _logger.LogWarning("Registration attempt failed: Username {Username} already taken.", userDetail.Username);
+                    return Conflict(new { success = false, message = ResponseMessages.UsernameExists });
                 }
 
                 // Hash password using BCrypt
@@ -64,16 +65,16 @@ namespace FlightDetailApi.Controllers
                 };
 
                 // Save the new user
-                _dbContext.Users.Add(newUser);
+                await _dbContext.Users.AddAsync(newUser);
                 await _dbContext.SaveChangesAsync();
 
-                _logger.LogInformation($"User {userDetail.Username} registered successfully.");
-                return Ok(new { message = "Registration Successful" });
+                _logger.LogInformation("User {Username} registered successfully.", userDetail.Username);
+                return Ok(new { success = true, message = ResponseMessages.RegistrationSuccess });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during user registration");
-                return StatusCode(500, new { message = "Something went wrong during registration. Please try again." });
+                return StatusCode(500, new { success = false, message = ResponseMessages.RegistrationError });
             }
         }
 
@@ -83,24 +84,27 @@ namespace FlightDetailApi.Controllers
         {
             if (loginDetails == null || string.IsNullOrEmpty(loginDetails.Username) || string.IsNullOrEmpty(loginDetails.Password))
             {
-                return BadRequest(new { message = "Username and password cannot be empty." });
+                _logger.LogWarning("Login attempt failed: Missing username or password.");
+                return BadRequest(new { success = false, message = ResponseMessages.LoginFailed });
             }
 
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == loginDetails.Username);
             if (user == null)
             {
-                return Unauthorized(new { message = "Invalid username or password." });
+                _logger.LogWarning("Login attempt failed: Username {Username} not found.", loginDetails.Username);
+                return Unauthorized(new { success = false, message = ResponseMessages.LoginFailed });
             }
 
             // Verify the password using BCrypt
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(loginDetails.Password, user.Password);
             if (!isPasswordValid)
             {
-                return Unauthorized(new { message = "Invalid username or password." });
+                _logger.LogWarning("Login attempt failed: Incorrect password for user {Username}.", loginDetails.Username);
+                return Unauthorized(new { success = false, message = ResponseMessages.LoginFailed });
             }
 
-            // Successful login (You can add JWT authentication here)
-            return Ok(new { message = "Login successful" });
+            _logger.LogInformation("User {Username} logged in successfully.", loginDetails.Username);
+            return Ok(new { success = true, message = ResponseMessages.LoginSuccess });
         }
 
         // GET: api/user/{username}
@@ -109,7 +113,8 @@ namespace FlightDetailApi.Controllers
         {
             if (string.IsNullOrEmpty(username))
             {
-                return BadRequest(new { message = "Username is required." });
+                _logger.LogWarning("User fetch failed: Username required.");
+                return BadRequest(new { success = false, message = ResponseMessages.UsernameRequired });
             }
 
             var user = await _dbContext.Users
@@ -125,10 +130,11 @@ namespace FlightDetailApi.Controllers
 
             if (user == null)
             {
-                return NotFound(new { message = "User not found." });
+                _logger.LogWarning("User fetch failed: Username {Username} not found.", username);
+                return NotFound(new { success = false, message = ResponseMessages.UserNotFound });
             }
 
-            return Ok(user);
+            return Ok( user );
         }
     }
 }

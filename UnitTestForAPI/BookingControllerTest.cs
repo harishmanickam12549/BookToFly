@@ -59,8 +59,6 @@ namespace UnitTestForAPI
             _context.Booking.Add(booking);
             await _context.SaveChangesAsync();
 
-            // _mockFlightRepository.Setup(x => x.GetFlightByIdAsync("IF100")).ReturnsAsync((DomesticFlightDetails)null);
-
             //Act
             var result = await _mockBookingController.GetBooking(BookingId);
 
@@ -110,9 +108,6 @@ namespace UnitTestForAPI
             var response=JsonConvert.DeserializeObject<Dictionary<string,object>>(responseJson);
             var  flightDetailsJson= JsonConvert.SerializeObject(response["flight"]);
             var flightDetails = JsonConvert.DeserializeObject<DomesticFlightDetails>(flightDetailsJson);
-
-            // Console.Write("i am " + flightDetails.FlightId);
-            // JsonConvert.SerializeObject(response["flight"])
 
 
             //Assert

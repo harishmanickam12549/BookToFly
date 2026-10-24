@@ -34,62 +34,59 @@ namespace BookToFlyMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginDetails)
         {
-            // Validates the model before processing login request
             if (!ModelState.IsValid)
             {
-                return View(loginDetails); // Returns the view with validation errors
+                return View(loginDetails); // Return view with validation errors
             }
 
             try
             {
-                // Map LoginViewModel to LoginDTO for API request
                 var admin = _mapper.Map<LoginDTO>(loginDetails);
-                var jsonContent = JsonSerializer.Serialize(admin); // Serialize login details
-                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json"); // Create HTTP content for request
+                var jsonContent = JsonSerializer.Serialize(admin);
+                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                // Sends POST request to the API to authenticate the user
                 var response = await _client.PostAsync(_client.BaseAddress + "Admin/Login", httpContent);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Read the JSON response as a string
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-
-                    // Parse the JSON and extract only the token
                     var jsonDoc = JsonDocument.Parse(jsonResponse);
                     var token = jsonDoc.RootElement.GetProperty("token").GetString();
+
                     // Store only the token in session
                     HttpContext.Session.SetString("JWT_TOKEN", token);
 
-                    return RedirectToAction("Dashboard", "Admin"); // Redirect to Admin dashboard on successful login
+                    _logger.LogInformation("User {User} logged in successfully.", loginDetails.Username);
+                    return RedirectToAction("Dashboard", "Admin");
                 }
                 else
                 {
-                    throw new LoginFailedException(); // Throw custom exception if login fails
+                    throw new LoginFailedException();
                 }
             }
             catch (LoginFailedException ex)
             {
-                // Handle login failure
-                ModelState.AddModelError(string.Empty, ex.Message);
+                _logger.LogError(ex, "Login failed for user {User}.", loginDetails.Username);
+                ModelState.AddModelError(string.Empty, "Invalid username or password.");
             }
             catch (Exception ex)
             {
-                // Handle any other exceptions (e.g., API request issues)
-                ModelState.AddModelError(string.Empty, new ApiRequestException(ex.Message, ex).Message);
+                _logger.LogError(ex, "Unexpected error occurred during login for user {User}.", loginDetails.Username);
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
             }
 
-            // Returns the login view with error messages if login failed
             return View(loginDetails);
         }
 
         // Handles logout functionality
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme); // Signs out from the authentication scheme
-            HttpContext.Session.Remove("JWT_TOKEN"); // Remove the JWT token from the session
-            return RedirectToAction("Login"); // Redirect to login page after logging out
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("JWT_TOKEN");
+
+            _logger.LogInformation("User logged out successfully.");
+            return RedirectToAction("Login");
         }
 
         // Returns the home page (index view)
@@ -98,7 +95,7 @@ namespace BookToFlyMVC.Controllers
             return View();
         }
 
-        // Returns the privacy page view
+        // Returns the privacy policy page view
         public IActionResult Privacy()
         {
             return View();
@@ -108,19 +105,20 @@ namespace BookToFlyMVC.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult SearchFlight()
         {
-            return View(); // Return the search flight view with no caching
+            return View();
         }
+
+        // Handles error pages and displays appropriate error messages
         public IActionResult Error(int? code = null, string errorMessage = null, string additionalDetails = null)
         {
-            // Set the error details for the view
             ViewData["ErrorCode"] = code ?? 500;
-            ViewData["ErrorMessage"] = errorMessage ?? "No additional information is available.";
-            ViewData["AdditionalDetails"] = additionalDetails ?? "No further details available.";
+            ViewData["ErrorMessage"] = errorMessage ?? "Internal Server Error :(";
+            ViewData["AdditionalDetails"] = additionalDetails ?? "Contact Aspire Systems Development Team.";
+
+            _logger.LogError("Error encountered. Code: {Code}, Message: {Message}, Details: {Details}", 
+                ViewData["ErrorCode"], ViewData["ErrorMessage"], ViewData["AdditionalDetails"]);
 
             return View("Error");
         }
-
-
-
     }
 }

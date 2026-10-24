@@ -1,3 +1,4 @@
+using FlightDetailApi.Constants;
 using FlightDetailApi.DTO;
 using FlightDetailApi.Models;
 using FlightDetailApi.Services;
@@ -20,6 +21,11 @@ namespace FlightDetailApi.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Handles admin login and returns a JWT token if credentials are valid.
+        /// </summary>
+        /// <param name="login">Login details including username and password.</param>
+        /// <returns>Returns JWT token if successful, otherwise an error response.</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
@@ -27,8 +33,8 @@ namespace FlightDetailApi.Controllers
 
             if (login == null || string.IsNullOrEmpty(login.Username))
             {
-                _logger.LogWarning("Login failed: Username or password is null or empty.");
-                return BadRequest(new { success = false, message = "Username or password should not be null." });
+                _logger.LogWarning("Login failed: {Message}", ResponseMessages.UsernameOrPasswordEmpty);
+                return BadRequest(new { success = false, message = ResponseMessages.UsernameOrPasswordEmpty });
             }
 
             try
@@ -36,8 +42,8 @@ namespace FlightDetailApi.Controllers
                 var admin = await _adminService.LoginAsync(login.Username, login.Password);
                 if (admin == null)
                 {
-                    _logger.LogWarning("Login failed: Invalid username or password.");
-                    return Unauthorized(new { success = false, message = "Invalid username or password." });
+                    _logger.LogWarning("Login failed: {Message}", ResponseMessages.InvalidCredentials);
+                    return Unauthorized(new { success = false, message = ResponseMessages.InvalidCredentials });
                 }
 
                 var token = _jwtTokenService.GenerateJWTToken(admin.Username, "Admin");
@@ -47,10 +53,15 @@ namespace FlightDetailApi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during login for user: {Username}", login.Username);
-                return StatusCode(500, new { success = false, message = "An error occurred while processing your request." });
+                return StatusCode(500, new { success = false, message = ResponseMessages.InternalServerError });
             }
         }
 
+        /// <summary>
+        /// Registers a new admin user.
+        /// </summary>
+        /// <param name="register">Admin user details.</param>
+        /// <returns>Returns success response if registration is successful.</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] AdminModel register)
         {
@@ -67,12 +78,12 @@ namespace FlightDetailApi.Controllers
             {
                 await _adminService.RegisterAsync(register);
                 _logger.LogInformation("Registration successful for user: {Username}", register.Username);
-                return Ok(new { success = true, message = "Registration successful." });
+                return Ok(new { success = true, message = ResponseMessages.RegistrationSuccess });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during registration for user: {Username}", register.Username);
-                return StatusCode(500, new { success = false, message = "An error occurred while processing your request." });
+                return StatusCode(500, new { success = false, message = ResponseMessages.InternalServerError });
             }
         }
     }

@@ -12,6 +12,6 @@ namespace FlightDetailApi.DTO
         public int AvailableSeats { get; set; }
         public decimal TicketPrice { get; set; }
         public List<string> AvailableDays { get; set; }
-        public string FlightType{get; set;}
+        public string FlightType { get; set; }
     }
 }

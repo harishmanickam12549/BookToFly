@@ -204,7 +204,7 @@ namespace BookToFlyMVC.Controllers
                 else
                 {
                     // Handle error if unable to update
-                    TempData["UpdateErrorMessage"] = "You Can't Add Flight Sorry, because You are not Authorized!";
+                    TempData["UpdateErrorMessage"] = "Failed to Add Flight Due to Wrong data";
                     var errorMessage = await response.Content.ReadAsStringAsync();
                     ModelState.AddModelError("", $"Error: {errorMessage}");
                 }
@@ -274,7 +274,9 @@ namespace BookToFlyMVC.Controllers
                     throw new FlightRetrievalException("Failed to retrieve flight details.");
                 }
 
-                return await response.Content.ReadFromJsonAsync<FlightDetailsDTO>();
+                var flight= await response.Content.ReadFromJsonAsync<FlightDetailsDTO>();
+                flight.FlightType=flightType;
+                return flight;
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
 using FlightDetailApi.Data;
+using FlightDetailApi.Models;
 using FlightDetailApi.Repositories;
 using FlightDetailApi.Repositories.IRepository;
 using Microsoft.AspNetCore.Mvc;

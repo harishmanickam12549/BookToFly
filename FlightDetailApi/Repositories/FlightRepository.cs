@@ -3,9 +3,9 @@ using FlightDetailApi.Models;
 using FlightDetailApi.Data;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using FlightDetailApi.Repositories;
 using FlightDetailApi.Repositories.IRepository;
 using BookToFlyMVC.Validations;
+
 
 namespace FlightDetailApi.Repositories
 {
@@ -24,7 +24,7 @@ namespace FlightDetailApi.Repositories
         public async Task AddInternationalFlightAsync(InternationalFlightDetails flight)
         {
             if (flight == null)
-                throw new ArgumentNullException(nameof(flight));
+                throw new ArgumentNullException(ErrorMessages.NullFlightObject);
 
             _context.InternationalFlightDetails.Add(flight);
             await _context.SaveChangesAsync();
@@ -34,7 +34,7 @@ namespace FlightDetailApi.Repositories
         public async Task AddDomesticFlightAsync(DomesticFlightDetails flight)
         {
             if (flight == null)
-                throw new ArgumentNullException(nameof(flight));
+                throw new ArgumentNullException(ErrorMessages.NullFlightObject);
 
             _context.DomesticFlightDetails.Add(flight);
             await _context.SaveChangesAsync();
@@ -44,11 +44,12 @@ namespace FlightDetailApi.Repositories
         public async Task<bool> FlightExists(string flightId)
         {
             if (string.IsNullOrEmpty(flightId))
-                throw new ArgumentException("Flight ID cannot be null or empty.");
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightId);
 
             return await _context.InternationalFlightDetails.AnyAsync(f => f.FlightId == flightId) ||
                    await _context.DomesticFlightDetails.AnyAsync(f => f.FlightId == flightId);
         }
+
 
         // Adds a flight based on the given FlightInputDTO, determining if it's international or domestic
         public async Task AddFlightAsync(FlightInputDTO flightInput)
@@ -57,7 +58,7 @@ namespace FlightDetailApi.Repositories
                 throw new ArgumentNullException(nameof(flightInput));
 
             if (string.IsNullOrEmpty(flightInput.FlightId))
-                throw new ArgumentException("Flight ID cannot be null or empty.");
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightId);
 
             if (flightInput.FlightId.StartsWith("IF")) // International Flight
             {
@@ -73,7 +74,7 @@ namespace FlightDetailApi.Repositories
             }
             else
             {
-                throw new ArgumentException("Invalid flight type. Flight ID must start with 'IF' or 'DF'.");
+                throw new ArgumentException(ErrorMessages.InvalidFlightId);
             }
 
             await _context.SaveChangesAsync();
@@ -83,23 +84,27 @@ namespace FlightDetailApi.Repositories
         public async Task<object> GetFlightByIdAsync(string flightId)
         {
             if (string.IsNullOrEmpty(flightId))
-                throw new ArgumentException("Flight ID cannot be null or empty.");
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightId);
 
             if (flightId.StartsWith("IF"))
+            {
                 return await _context.InternationalFlightDetails.FirstOrDefaultAsync(f => f.FlightId == flightId)
-                       ?? throw new FlightNotFoundException($"International flight with ID {flightId} not found.");
+                       ?? throw new FlightNotFoundException(ErrorMessages.FlightNotFound(flightId, "International"));
+            }
             else if (flightId.StartsWith("DF"))
+            {
                 return await _context.DomesticFlightDetails.FirstOrDefaultAsync(f => f.FlightId == flightId)
-                       ?? throw new FlightNotFoundException($"Domestic flight with ID {flightId} not found.");
+                       ?? throw new FlightNotFoundException(ErrorMessages.FlightNotFound(flightId, "Domestic"));
+            }
 
-            throw new ArgumentException("Invalid flight type. Flight ID must start with 'IF' or 'DF'.");
+            throw new ArgumentException(ErrorMessages.InvalidFlightId);
         }
 
         // Gets a list of flight numbers by type (International or Domestic)
         public async Task<List<string>> GetFlightNumbersByType(string flightType)
         {
             if (string.IsNullOrEmpty(flightType))
-                throw new ArgumentException("Flight type cannot be null or empty.");
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightType);
 
             if (flightType.Equals("International", StringComparison.OrdinalIgnoreCase))
             {
@@ -110,7 +115,7 @@ namespace FlightDetailApi.Repositories
                 return await _context.DomesticFlightDetails.Select(f => f.FlightId).ToListAsync();
             }
 
-            throw new ArgumentException("Invalid flight type. Must be 'International' or 'Domestic'.");
+            throw new ArgumentException(ErrorMessages.InvalidFlightType);
         }
 
         // Retrieves flights based on source and destination with a specified type
@@ -119,8 +124,10 @@ namespace FlightDetailApi.Repositories
             if (searchInput == null)
                 throw new ArgumentNullException(nameof(searchInput));
 
-            if (string.IsNullOrEmpty(searchInput.FlightType) || string.IsNullOrEmpty(searchInput.Source) || string.IsNullOrEmpty(searchInput.Destination))
-                throw new ArgumentException("Flight type, source, and destination must be provided.");
+            if (string.IsNullOrEmpty(searchInput.FlightType) ||
+                string.IsNullOrEmpty(searchInput.Source) ||
+                string.IsNullOrEmpty(searchInput.Destination))
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightDetails);
 
             var allFlights = new List<FlightOutputDTO>();
 
@@ -140,15 +147,18 @@ namespace FlightDetailApi.Repositories
                     .ToListAsync();
                 allFlights.AddRange(_mapper.Map<List<FlightOutputDTO>>(flights));
             }
+            else
+            {
+                throw new ArgumentException(ErrorMessages.InvalidFlightType);
+            }
 
             return allFlights;
         }
-
         // Retrieves all flights based on the specified type (International or Domestic)
         public async Task<List<FlightOutputDTO>> GetFlightsByTypeAsync(string flightType)
         {
             if (string.IsNullOrEmpty(flightType))
-                throw new ArgumentException("Flight type cannot be null or empty.");
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightType);
 
             if (flightType.Equals("International", StringComparison.OrdinalIgnoreCase))
             {
@@ -161,20 +171,20 @@ namespace FlightDetailApi.Repositories
                 return _mapper.Map<List<FlightOutputDTO>>(flights);
             }
 
-            throw new ArgumentException("Invalid flight type. Must be 'International' or 'Domestic'.");
+            throw new ArgumentException(ErrorMessages.InvalidFlightType);
         }
 
         // Deletes a flight based on its ID
         public async Task DeleteFlightAsync(string flightId)
         {
             if (string.IsNullOrEmpty(flightId))
-                throw new ArgumentException("Flight ID cannot be null or empty.");
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightId);
 
             if (flightId.StartsWith("IF"))
             {
                 var flight = await _context.InternationalFlightDetails.FirstOrDefaultAsync(f => f.FlightId == flightId);
                 if (flight == null)
-                    throw new FlightNotFoundException($"International flight with ID {flightId} not found.");
+                    throw new FlightNotFoundException(ErrorMessages.FlightNotFound(flightId));
 
                 _context.InternationalFlightDetails.Remove(flight);
             }
@@ -182,27 +192,26 @@ namespace FlightDetailApi.Repositories
             {
                 var flight = await _context.DomesticFlightDetails.FirstOrDefaultAsync(f => f.FlightId == flightId);
                 if (flight == null)
-                    throw new FlightNotFoundException($"Domestic flight with ID {flightId} not found.");
+                    throw new FlightNotFoundException(ErrorMessages.FlightNotFound(flightId));
 
                 _context.DomesticFlightDetails.Remove(flight);
             }
             else
             {
-                throw new ArgumentException("Invalid flight type. Flight ID must start with 'IF' or 'DF'.");
+                throw new ArgumentException(ErrorMessages.InvalidFlightType);
             }
 
             await _context.SaveChangesAsync();
         }
-
         // Updates an existing flight's details
         public async Task UpdateFlightAsync(FlightInputDTO flightInput)
         {
             if (flightInput == null)
-                throw new ArgumentNullException(nameof(flightInput));
+                throw new ArgumentNullException(nameof(flightInput), ErrorMessages.NullFlightInput);
 
             var flight = await GetFlightByIdAsync(flightInput.FlightId);
             if (flight == null)
-                throw new FlightNotFoundException($"Flight with ID {flightInput.FlightId} not found.");
+                throw new FlightNotFoundException(ErrorMessages.FlightNotFound(flightInput.FlightId));
 
             if (flight is InternationalFlightDetails internationalFlight)
             {
@@ -216,7 +225,7 @@ namespace FlightDetailApi.Repositories
             }
             else
             {
-                throw new FlightApiException("Invalid flight type.");
+                throw new FlightApiException(ErrorMessages.InvalidFlightType);
             }
 
             await _context.SaveChangesAsync();
@@ -225,14 +234,14 @@ namespace FlightDetailApi.Repositories
         public async Task<bool> DecrementAvailableSeats(string flightId)
         {
             if (string.IsNullOrEmpty(flightId))
-                throw new ArgumentException("Flight ID cannot be null or empty.");
+                throw new ArgumentException(ErrorMessages.NullOrEmptyFlightId);
 
             if (flightId.StartsWith("IF")) // International Flight
             {
                 var flight = await _context.InternationalFlightDetails
                                            .FirstOrDefaultAsync(f => f.FlightId == flightId);
                 if (flight == null)
-                    throw new FlightNotFoundException($"International flight with ID {flightId} not found.");
+                    throw new FlightNotFoundException(ErrorMessages.FlightNotFound(flightId));
 
                 if (flight.AvailableSeats > 0)
                 {
@@ -248,7 +257,7 @@ namespace FlightDetailApi.Repositories
                 var flight = await _context.DomesticFlightDetails
                                            .FirstOrDefaultAsync(f => f.FlightId == flightId);
                 if (flight == null)
-                    throw new FlightNotFoundException($"Domestic flight with ID {flightId} not found.");
+                    throw new FlightNotFoundException(ErrorMessages.FlightNotFound(flightId));
 
                 if (flight.AvailableSeats > 0)
                 {
@@ -259,8 +268,8 @@ namespace FlightDetailApi.Repositories
                 }
                 return false; // No seats available
             }
-
-            throw new ArgumentException("Invalid flight type. Flight ID must start with 'IF' or 'DF'.");
+            throw new ArgumentException(ErrorMessages.InvalidFlightType);
         }
+
     }
 }

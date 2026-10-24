@@ -17,9 +17,9 @@ namespace BookToFlyMVC.Configurations
                 .AddCookie(options =>
                 {
                     // Sets the login path to the User/Login page
-                    options.LoginPath = "/User/Login";
+                    options.LoginPath = "/Home/Login";
                     // Sets the logout path to the User/Logout page
-                    options.LogoutPath = "/User/Logout";
+                    options.LogoutPath = "/Home/Logout";
                 });
 
             // Configures JWT-based authentication
