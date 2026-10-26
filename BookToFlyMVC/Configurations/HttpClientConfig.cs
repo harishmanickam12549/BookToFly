@@ -14,7 +14,7 @@ namespace BookToFlyMVC.Configurations
             services.AddHttpClient("FlightClient", client =>
             {
                 // Sets the base address for the HTTP client to communicate with the flight API
-                client.BaseAddress = new Uri("http://localhost:5087/api/");
+                client.BaseAddress = new Uri("https://localhost:7096/api/");
             })
             // Attaches a custom message handler for handling token-related operations
             .AddHttpMessageHandler<TokenHandler>();

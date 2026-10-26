@@ -1,0 +1,29 @@
+# Visual Studio
+.vs/
+**/.vs/
+*.suo
+*.user
+*.vsidx
+*.csproj.user
+
+# .NET build output
+**/bin/
+**/obj/
+
+# Logs
+**/logs/
+*.log
+
+# React / Node
+**/node_modules/
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# IDE and OS files
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store

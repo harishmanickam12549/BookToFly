@@ -17,7 +17,7 @@ builder.Services.ConfigureAuthentication();
 builder.Services.ConfigureHttpClient();
 builder.Services.ConfigureSession();
 builder.Services.ConfigureLogging();
-builder.Services.AddAutoMapper(typeof(FlightDTOMapping));
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<FlightDTOMapping>());
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<TokenHandler>();
 

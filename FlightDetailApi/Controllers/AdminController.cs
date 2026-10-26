@@ -2,6 +2,7 @@ using FlightDetailApi.Constants;
 using FlightDetailApi.DTO;
 using FlightDetailApi.Models;
 using FlightDetailApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightDetailApi.Controllers

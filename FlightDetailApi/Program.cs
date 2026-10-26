@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 // Add configurations
 builder.Services.AddSwaggerConfiguration();
 builder.Services.AddJwtAuthentication(builder.Configuration);
-builder.Services.AddAutoMapper(typeof(FlightMapper)); // AutoMapper profile registration
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<FlightMapper>()); // AutoMapper profile registration
 builder.Services.AddDatabaseContexts(builder.Configuration); // Ensure this method correctly configures your DbContext
 builder.Services.AddCorsPolicy();
 builder.Host.ConfigureLogging();
